@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Multilingual Feedback Uploader</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; margin-top: 80px; }
+    input, button { padding: 10px; font-size: 16px; }
+    #status { margin-top: 20px; font-weight: bold; color: green; }
+  </style>
+</head>
+<body>
+  <h1>📤 Upload Your Feedback</h1>
+  <input type="file" id="fileInput" accept=".txt"><br><br>
+  <button onclick="upload()">Upload Feedback</button>
+
+  <div id="status"></div>
+
+  <script>
+    async function upload() {
+      const fileInput = document.getElementById("fileInput");
+      const file = fileInput.files[0];
+      const statusDiv = document.getElementById("status");
+
+      if (!file) {
+        alert("Please choose a .txt file first.");
+        return;
+      }
+
+      try {
+        const res = await fetch(
+          'https://ljiwrxxu45.execute-api.us-east-1.amazonaws.com/GeneratePresignedUrl?filename=' + encodeURIComponent(file.name)
+        );
+        const { uploadUrl } = await res.json();
+
+        const uploadRes = await fetch(uploadUrl, {
+          method: 'PUT',
+          body: file,
+          headers: {
+            'Content-Type': 'text/plain'
+          }
+        });
+
+        if (uploadRes.ok) {
+          statusDiv.textContent = "✅ Upload successful! Feedback is being analyzed.";
+        } else {
+          statusDiv.textContent = "❌ Upload failed.";
+        }
+      } catch (err) {
+        console.error(err);
+        statusDiv.textContent = "❌ Something went wrong.";
+      }
+    }
+  </script>
+</body>
+</html>
