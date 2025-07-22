@@ -1,4 +1,4 @@
-# multilingual-feedback-analyzer
+
 # Multilingual Feedback Analyzer
 
 This project is a serverless AWS-powered web app that allows users to upload feedback files in any language. It auto-translates the content, analyzes the sentiment, extracts the relevant department, and stores the result in DynamoDB. If the feedback is negative, it triggers an alert via SNS.
